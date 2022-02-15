@@ -15,53 +15,11 @@ import {
   deleteDoc,
 } from 'firebase/firestore';
 import { auth, db } from '../../../firebase/firebase';
-import FollowButton from './FollowButton';
 import { COLORS } from '../../../assets/colors';
+import FollowingButton from './FollowingButton';
 
 const UserListCard = ({ userName, name, profilePicture, uid }) => {
   const [following, setFollowing] = useState([]);
-
-  const checkForFollowing = async () => {
-    const q = query(
-      collection(db, 'users', auth.currentUser.email, 'following'),
-      where('uid', '==', uid)
-    );
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        console.log(
-          'Following',
-          querySnapshot.docs.map((doc) => doc.data().uid)
-        );
-        setFollowing(querySnapshot.docs.map((doc) => doc.data().uid));
-      });
-    });
-  };
-
-  const handleFollow = async () => {
-    console.log('FO', following);
-    checkForFollowing();
-    if (following.includes(uid)) {
-      const q = query(
-        collection(db, 'users', auth.currentUser.email, 'following'),
-        where('uid', '==', uid)
-      );
-      const snap = await getDocs(q);
-      snap.forEach((doc) => {
-        deleteDoc(doc.ref);
-      });
-      const newFollowing = [];
-      setFollowing(newFollowing);
-    } else {
-      const docRef = doc(db, 'users', auth.currentUser.email);
-      await addDoc(collection(docRef, 'following'), {
-        uid: uid,
-      });
-    }
-  };
-
-  useEffect(() => {
-    checkForFollowing();
-  }, []);
 
   return (
     <View style={styles.container}>
@@ -80,10 +38,10 @@ const UserListCard = ({ userName, name, profilePicture, uid }) => {
         </View>
       </View>
       <View style={styles.followButtonContainer}>
-        {/* <FollowButton following={true}/> */}
-        <TouchableOpacity style={styles.followButton} onPress={handleFollow}>
+        <FollowingButton uid={uid} />
+        {/* <TouchableOpacity style={styles.followButton} onPress={handleFollow}>
           <Text style={styles.followText}>Follow</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </View>
   );
@@ -114,13 +72,13 @@ const styles = StyleSheet.create({
   },
   pictureFrame: { justifyContent: 'center', alignItems: 'center' },
   profilePicture: { width: 45, height: 45, borderRadius: 100, marginRight: 5 },
-  followButton: {
-    backgroundColor: COLORS.secondary,
-    width: 55,
-    height: 25,
-    borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  followText: { color: COLORS.white },
+  // followButton: {
+  //   backgroundColor: COLORS.secondary,
+  //   width: 55,
+  //   height: 25,
+  //   borderRadius: 5,
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  // },
+  // followText: { color: COLORS.white },
 });
