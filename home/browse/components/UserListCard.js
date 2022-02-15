@@ -80,6 +80,7 @@ const UserListCard = ({ userName, name, profilePicture, uid }) => {
         </View>
       </View>
       <View style={styles.followButtonContainer}>
+        {/* <FollowButton following={true}/> */}
         <TouchableOpacity style={styles.followButton} onPress={handleFollow}>
           <Text style={styles.followText}>Follow</Text>
         </TouchableOpacity>

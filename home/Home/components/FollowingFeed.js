@@ -38,6 +38,7 @@ const FollowingFeed = () => {
   });
 
   const getFollowingPosts2 = async () => {
+    setPosts([]);
     const followingQ = query(
       collection(db, 'users', auth.currentUser.email, 'following')
     );

@@ -4,8 +4,8 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 const FollowButton = () => {
   return (
     <View style={styles.container}>
-      <TouchableOpacity>
-        <Text>Edit</Text>
+      <TouchableOpacity style={styles.followButton} onPress={props.func}>
+        <Text style={styles.followText}>Follow</Text>
       </TouchableOpacity>
     </View>
   );
