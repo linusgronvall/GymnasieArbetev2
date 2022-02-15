@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -50,8 +50,8 @@ const PostScreen = ({ navigation }) => {
     }
   }, []);
 
-  console.log(auth.currentUser.uid);
-
+  // console.log(auth.currentUser.uid);
+  console.log('Data from post', data?.uid);
   const postText = async () => {
     try {
       if (userInput.length < 1) {
@@ -62,7 +62,7 @@ const PostScreen = ({ navigation }) => {
         );
       } else {
         const docRef = doc(db, 'users', auth.currentUser.email);
-        await addDoc(collection(docRef, 'posts'), {
+        await addDoc(collection(db, 'posts'), {
           text: userInput,
           date: getDate(),
           userName: data?.userName,
@@ -70,12 +70,13 @@ const PostScreen = ({ navigation }) => {
           profilePicture: data?.profilePicture,
           id: uuid.v4(),
           uid: auth.currentUser.uid,
+          likeCount: 0,
         });
         console.log('Document written with ID: ', docRef.id);
-        console.log(userInput);
+        console.log('user input: ', userInput);
+        console.log(auth.currentUser.uid);
         setSuccessful(true);
         setUserInput('');
-        getDate();
         if (successful) {
           const timer = setTimeout(() => {
             console.log('Loading');

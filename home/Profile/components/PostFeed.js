@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -17,6 +17,8 @@ import {
   collection,
   getDocs,
   onSnapshot,
+  where,
+  query,
 } from 'firebase/firestore';
 import { COLORS } from '../../../assets/colors';
 
@@ -28,7 +30,7 @@ const PostFeed = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [data, setData] = useState(null);
+  const [user, setUser] = useState(null);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -40,27 +42,32 @@ const PostFeed = () => {
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      setData(docSnap.data());
+      setUser(docSnap.data());
       setLoading(false);
     } else {
       console.log('No such document!', docSnap.data);
     }
-  }, [posts]);
+  }, []);
 
-  const getPosts = async () => {
-    const docRef = await getDocs(
-      collection(db, 'users', auth.currentUser.email, 'posts')
+  const getPosts2 = async () => {
+    setPosts([]);
+    const q = query(
+      collection(db, 'posts'),
+      where('uid', '==', auth.currentUser.uid)
     );
-
-    setPosts(docRef.docs.map((doc) => doc.data()));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        setPosts(querySnapshot.docs.map((doc) => doc.data()));
+      });
+    });
   };
 
   useEffect(() => {
-    getPosts();
+    getPosts2();
   }, []);
 
   useEffect(() => {
-    if (refreshing === false) getPosts();
+    if (refreshing === false) getPosts2();
   }, [refreshing]);
 
   if (posts) {
@@ -82,12 +89,12 @@ const PostFeed = () => {
           <SafeAreaView>
             {posts.map((post) => (
               <TextPost
-                content={post.text}
-                image={data?.profilePicture}
-                username={data?.userName}
-                name={data?.name}
+                content={post?.text}
+                image={post?.profilePicture}
+                userName={post?.userName}
+                name={post?.name}
                 date={post.date}
-                key={post?.date}
+                key={post?.id}
                 id={post?.id}
               />
             ))}
@@ -109,7 +116,6 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     height: '100%',
-    backgroundColor: 'white',
   },
-  feed: {},
+  feed: { paddingVertical: 10 },
 });

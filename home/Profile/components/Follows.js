@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { auth, db } from '../../../firebase/firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import { COLORS } from '../../../assets/colors';
 
 const Follows = () => {
   return (
@@ -19,7 +20,7 @@ export default Follows;
 const styles = StyleSheet.create({
   follows: {
     flexDirection: 'row',
-    paddingVertical: 10,
+    paddingTop: 15,
   },
-  text: { marginRight: 8, color: 'white', fontWeight: '600' },
+  text: { marginRight: 8, color: COLORS.primary, fontWeight: '600' },
 });

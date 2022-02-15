@@ -33,7 +33,7 @@ const RegisterScreen = ({ navigation }) => {
         email: email,
         profilePicture:
           'https://i.pinimg.com/originals/63/9f/f2/639ff23f2fa0d07258f8d6290136d918.jpg',
-        id: uuid.v4(),
+        userId: uuid.v4(),
       });
       console.log('Document written with ID: ', email);
     } catch (e) {

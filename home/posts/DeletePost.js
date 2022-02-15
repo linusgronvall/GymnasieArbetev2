@@ -3,18 +3,25 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { doc, deleteDoc } from 'firebase/firestore';
 import { auth, db } from '../../firebase/firebase';
 
-const DeletePost = () => {
+const DeletePost = (owner) => {
   const handleDelete = async () => {
     await deleteDoc(doc(db, 'users', auth.currentUser.email), 'posts');
   };
-
-  return (
+  if (owner === true) {
+    return (
+      <View>
+        <TouchableOpacity>
+          <Text>Delete</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  } else if (owner === false) {
     <View>
-      <TouchableOpacity onPress={''}>
-        <Text>Delete</Text>
+      <TouchableOpacity>
+        <Text>Follow</Text>
       </TouchableOpacity>
-    </View>
-  );
+    </View>;
+  }
 };
 
 export default DeletePost;

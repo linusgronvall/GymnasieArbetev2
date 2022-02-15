@@ -34,6 +34,7 @@ const ProfileScreen = () => {
         <ContextProvider>
           <ProfileData />
         </ContextProvider>
+
         <LikedPosts />
       </View>
     );

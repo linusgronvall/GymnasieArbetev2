@@ -1,19 +1,24 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import { UserContext } from '../../Home/UserContext';
 import Follows from '../components/Follows';
 import Bio from '../components/Bio';
 import FollowButton from '../components/FollowButton';
 import { auth, db } from '../../../firebase/firebase';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { COLORS } from '../../../assets/colors';
 import TextPost from '../../posts/TextPost';
 
-const ProfileData = () => {
+const ProfileData = ({ navigation }) => {
   const data = useContext(UserContext);
+  const [bioInput, setBioInput] = useState({ state: false, content: '' });
 
-  const handleSignOut = () => {
-    signOut(auth).catch((error) => {});
+  const onChange = () => {
+    if (bioInput.content.length == 0) {
+      setBioInput({ state: !bioInput.state, content: 'Content' });
+    } else {
+      setBioInput({ state: !bioInput.state, content: '' });
+    }
+    console.log(!bioInput.state);
   };
 
   return (
@@ -35,19 +40,19 @@ const ProfileData = () => {
             </View>
           </View>
           <View style={styles.followButtonContainer}>
-            <TouchableOpacity
-              onPress={handleSignOut}
-              style={styles.logOutButton}
-            >
-              <Text style={styles.logOutButtonText}>Log out</Text>
+            <TouchableOpacity style={styles.logOutButton}>
+              <Text style={styles.logOutButtonText}>Follow</Text>
             </TouchableOpacity>
           </View>
         </View>
         <View style={styles.secondContainer}>
           <Follows />
-          <Bio />
         </View>
       </View>
+      {/* <View style={styles.location}>
+        <Text style={styles.locationText}>Hjärup, Sweden </Text>
+      </View> */}
+      <Bio text={bioInput.content} show={false} />
     </View>
   );
 };
@@ -57,16 +62,16 @@ export default ProfileData;
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: 175,
     alignItems: 'center',
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
     backgroundColor: COLORS.secondary,
     // borderRadius: 15,
+    paddingTop: 10,
   },
   userContainer: {
     flexDirection: 'row',
     width: '100%',
-    paddingHorizontal: 15,
+    paddingHorizontal: 20,
   },
   // pictureFrame: {
   //   backgroundColor: 'grey',
@@ -95,7 +100,7 @@ const styles = StyleSheet.create({
   secondContainer: {
     width: '100%',
     justifyContent: 'center',
-    paddingLeft: 15,
+    paddingHorizontal: 20,
   },
   followButtonContainer: {
     width: '50%',
@@ -103,11 +108,8 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   profileInfo: {
+    height: 95,
     width: '100%',
-    paddingBottom: 15,
-    backgroundColor: COLORS.secondary,
-    // borderBottomLeftRadius: 15,
-    // borderBottomRightRadius: 15,
     borderRadius: 15,
     shadowColor: COLORS.shadow,
     shadowOpacity: 0.2,
@@ -133,5 +135,15 @@ const styles = StyleSheet.create({
   userName: {
     color: 'white',
     fontSize: 15,
+  },
+  location: {
+    width: '100%',
+    paddingHorizontal: 20,
+    paddingBottom: 5,
+  },
+  locationText: {
+    color: COLORS.primary,
+    fontWeight: '600',
+    fontSize: 14,
   },
 });

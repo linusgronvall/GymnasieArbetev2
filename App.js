@@ -8,7 +8,10 @@ import HomeTabs from './home/routes/HomeTabs';
 import { auth, db } from './firebase/firebase';
 import LoadingScreen from './auth/screens/LoadingScreen';
 import HomeStack from './home/routes/HomeStack';
+import { LogBox } from 'react-native';
 
+LogBox.ignoreLogs(['AsyncStorage']);
+LogBox.ignoreAllLogs();
 export default function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);

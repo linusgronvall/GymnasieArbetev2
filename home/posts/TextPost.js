@@ -12,16 +12,29 @@ import {
   doc,
   onSnapshot,
   documentId,
+  deleteDoc,
+  where,
+  query,
+  updateDoc,
+  increment,
 } from 'firebase/firestore';
+import DeletePost from './DeletePost';
 
-const TextPost = ({ content, image, userName, name, date, id, navigation }) => {
+const TextPost = ({
+  content,
+  image,
+  userName,
+  name,
+  date,
+  id,
+  uid,
+  likeCount,
+  userId,
+  navigation,
+}) => {
   const [posts, setPosts] = useState([]);
-  const [currentLikeState, setCurrentLikeState] = useState({
-    state: false,
-    counter: 0,
-  });
-
-  const updateLikes = () => {};
+  const [likedPosts, setLikedPosts] = useState([]);
+  const [exist, setExist] = useState(false);
 
   const getLikeState = async () => {
     const docRef = await getDocs(
@@ -30,30 +43,71 @@ const TextPost = ({ content, image, userName, name, date, id, navigation }) => {
     setPosts(docRef.docs.map((doc) => doc.data()));
   };
 
-  useEffect(() => {
-    getLikeState;
-  }, []);
-
-  // Hitta i databasen where username === username alltså hitta den användaren som posten tillhör sen hämta rätt post.
-
-  const handleUpdateLike = async () => {
-    const docRef = doc(db, 'users', auth.currentUser.email);
-    await addDoc(collection(docRef, 'likedPosts'), {
-      content: content,
-      image: image,
-      userName: userName,
-      name: name,
-      date: date,
-      id: id,
-      liked: true,
-    });
-    setCurrentLikeState({
-      state: !currentLikeState.state,
-      counter: currentLikeState.counter + (currentLikeState.state ? -1 : 1),
+  const checkIfLike = async () => {
+    const q = query(
+      collection(db, 'users', auth.currentUser.email, 'likedPosts'),
+      where('id', '==', id)
+    );
+    await getDocs(q, (querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        if (doc.exists()) {
+          console.log('DOCC', doc.data());
+        } else {
+          setExist(false);
+        }
+        setExist(true);
+      });
     });
   };
 
-  const getLikes = () => {};
+  // useEffect(() => {
+  //   checkIfLike();
+  // });
+
+  const handleUpdateLike = async () => {
+    checkIfLike;
+    if (!exist) {
+      console.log('liked');
+      console.log(id, uid);
+
+      // Add likedPosts in curUser
+      const docRef = doc(db, 'users', auth.currentUser.email);
+      await addDoc(collection(docRef, 'likedPosts'), {
+        id: id,
+        uid: uid,
+      });
+
+      // Update original post likeCount
+      const q = query(collection(db, 'posts'), where('id', '==', id));
+      const snapShot = await getDocs(q);
+      snapShot.forEach((doc) => {
+        updateDoc(doc.ref, {
+          likeCount: increment(1),
+        });
+      });
+    } else if (exist) {
+      const quer = query(
+        collection(db, 'users', auth.currentUser.email, 'likedPosts'),
+        where('id', '==', id)
+      );
+      const snep = await getDocs(quer);
+      snep.forEach((doc) => {
+        deleteDoc(doc.ref);
+      });
+
+      //decrement
+      const q = query(collection(db, 'posts'), where('id', '==', id));
+      const snapShot = await getDocs(q);
+      snapShot.forEach((doc) => {
+        console.log(snapShot.docs.map((doc) => doc.data()));
+        updateDoc(doc.ref, {
+          likeCount: increment(-1),
+        });
+      });
+    }
+    console.log(exist);
+    checkIfLike();
+  };
 
   return (
     <TouchableOpacity style={styles.container} activeOpacity={0.8}>
@@ -74,17 +128,15 @@ const TextPost = ({ content, image, userName, name, date, id, navigation }) => {
             <Ionicons
               color='grey'
               size={17}
-              name={posts.liked ? 'heart' : 'heart-outline'}
+              name={posts.liked ? 'heart' : 'heart-outline'} //
               onPress={handleUpdateLike}
               // currentLikeState.state
             />
-            <Text style={styles.actionButtonsNumbers}>
-              {currentLikeState.counter}
-            </Text>
+            <Text style={styles.actionButtonsNumbers}>{likeCount}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button}>
             <Ionicons color='grey' size={16} name='chatbox-outline' />
-            <Text style={styles.actionButtonsNumbers}>14</Text>
+            <Text style={styles.actionButtonsNumbers}>0</Text>
           </TouchableOpacity>
         </View>
         <Text style={styles.dateText}>{date}</Text>

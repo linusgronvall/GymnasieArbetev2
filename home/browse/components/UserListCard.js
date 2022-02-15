@@ -11,22 +11,22 @@ import {
   documentId,
   query,
   collectionGroup,
+  where,
 } from 'firebase/firestore';
 import { auth, db } from '../../../firebase/firebase';
 import FollowButton from './FollowButton';
 import { COLORS } from '../../../assets/colors';
 
-const UserListCard = ({ username, name, profilePicture, id }) => {
+const UserListCard = ({ userName, name, profilePicture, uid }) => {
+  const [test, setTest] = useState([]);
+
   const handleFollow = async () => {
-    console.log(username, name, profilePicture, id);
     const docRef = doc(db, 'users', auth.currentUser.email);
     await addDoc(collection(docRef, 'following'), {
-      name: name,
-      username: username,
-      profilePicture: profilePicture,
-      id: id,
+      uid: uid,
     });
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.userInfo}>
@@ -40,7 +40,7 @@ const UserListCard = ({ username, name, profilePicture, id }) => {
         </View>
         <View style={styles.nameContainer}>
           <Text>{name}</Text>
-          <Text>@{username}</Text>
+          <Text>@{userName}</Text>
         </View>
       </View>
       <View style={styles.followButtonContainer}>

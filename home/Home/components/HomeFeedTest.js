@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useLayoutEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -21,6 +21,7 @@ import {
   collectionGroup,
   query,
   where,
+  updateDoc,
 } from 'firebase/firestore';
 import { COLORS } from '../../../assets/colors';
 import Header from '../../../components/Header';
@@ -40,17 +41,35 @@ const HomeFeedTest = ({ navigation }) => {
     wait(1000).then(() => setRefreshing(false));
   });
 
-  const getPosts = async () => {
-    const docRef = doc(db, auth.currentUser.email, 'following');
-    const userPosts = query(collectionGroup(db, 'posts'));
+  // const getPosts = async () => {
+  //   const docRef = doc(db, auth.currentUser.email, 'following');
+  //   const userPosts = query(collection(db, 'posts'));
 
-    const querySnapshot = await getDocs(userPosts);
-    querySnapshot.forEach((doc) => {
-      setPosts(querySnapshot.docs.map((doc) => doc.data()));
+  //   const querySnapshot = await getDocs(userPosts);
+  //   querySnapshot.forEach((doc) => {
+  //     setPosts(querySnapshot.docs.map((doc) => doc.data()));
+  //   });
+  // };
+
+  const getPosts = async () => {
+    setPosts([]);
+    const q = query(collection(db, 'posts'));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        setPosts(querySnapshot.docs.map((doc) => doc.data()));
+      });
+    });
+  };
+
+  const quickFix = async () => {
+    const userRef = doc(db, 'users', auth.currentUser.email);
+    await updateDoc(userRef, {
+      uid: auth.currentUser.uid,
     });
   };
 
   useEffect(() => {
+    quickFix();
     getPosts();
   }, []);
 
@@ -61,7 +80,6 @@ const HomeFeedTest = ({ navigation }) => {
   if (posts) {
     return (
       <SafeAreaView style={styles.container}>
-        {/* <Header title={'Feed'} /> */}
         <ScrollView
           contentContainerStyle={{
             automaticallyAdjustContentInsets: true,
@@ -76,6 +94,8 @@ const HomeFeedTest = ({ navigation }) => {
           }
         >
           <SafeAreaView style={{}}>
+            {/* {console.log('posts from jsx home', posts)} */}
+
             {posts.map((post) => (
               <TextPost
                 content={post?.text}
@@ -85,6 +105,8 @@ const HomeFeedTest = ({ navigation }) => {
                 date={post?.date}
                 key={post?.id}
                 id={post?.id}
+                uid={post?.uid}
+                likeCount={post?.likeCount}
               />
             ))}
           </SafeAreaView>

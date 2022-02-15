@@ -20,7 +20,7 @@ const TopNavigator = () => {
     >
       <Tab.Screen name='Posts' component={PostFeed} />
       <Tab.Screen name='Liked Posts' component={LikedPosts} />
-    </Tab.Navigator>
+    </Tab.Navigator >
   );
 };
 

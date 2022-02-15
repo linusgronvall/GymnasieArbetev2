@@ -18,6 +18,8 @@ import PostScreen3 from '../posts/PostScreen3';
 import TopNavigator from '../Profile/components/TopNavigator';
 import HomeTopNav from '../Home/components/HomeTopNav';
 import HomeScreenv2 from '../Home/components/HomeScreenv2';
+import ProfileStack from '../Profile/ProfileStack';
+import ProfileDrawer from '../Profile/ProfileDrawer';
 
 const Tab = createBottomTabNavigator();
 
@@ -80,7 +82,7 @@ const HomeTabs = ({ navigation }) => {
       />
 
       <Tab.Screen name='Messages' component={MessageScreen} />
-      <Tab.Screen name='Profile' component={HomeScreen} />
+      <Tab.Screen name='Profile' component={ProfileStack} />
     </Tab.Navigator>
   );
 };

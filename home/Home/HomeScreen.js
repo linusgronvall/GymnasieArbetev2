@@ -15,7 +15,7 @@ import TopNavigator from '../Profile/components/TopNavigator';
 import ContextProvider from './Provider';
 import ProfileData from '../Profile/components/ProfileData';
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <ContextProvider>
@@ -31,5 +31,22 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: COLORS.secondary,
+  },
+  buttonContainer: { justifyContent: 'center', alignItems: 'center' },
+  editButton: {
+    borderColor: COLORS.primary,
+    borderWidth: 1,
+    borderRadius: 5,
+    width: 250,
+    height: 25,
+    marginBottom: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  editButtonText: {
+    color: COLORS.primary,
+    fontSize: 14,
+    fontWeight: '500',
   },
 });

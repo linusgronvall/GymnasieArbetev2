@@ -17,6 +17,10 @@ import {
   collection,
   getDocs,
   onSnapshot,
+  collectionGroup,
+  query,
+  where,
+  docs,
 } from 'firebase/firestore';
 import { COLORS } from '../../../assets/colors';
 
@@ -35,16 +39,30 @@ const LikedPosts = () => {
     wait(1000).then(() => setRefreshing(false));
   });
 
-  const getPosts = async () => {
-    const docRef = await getDocs(
-      collection(db, 'users', auth.currentUser.email, 'likedPosts')
-    );
+  // const getPosts = async () => {
+  //   const docRef = await getDocs(
+  //     collection(db, 'users', auth.currentUser.email, 'likedPosts')
+  //   );
 
-    setPosts(docRef.docs.map((doc) => doc.data()));
+  //   setPosts(docRef.docs.map((doc) => doc.data()));
+  // };
+
+  const getPosts = async () => {
+    // Get user info
+    const userRef = doc(db, 'users', auth.currentUser.email);
+    const userSnap = await getDoc(userRef);
+
+    // Get users liked posts by querying all posts where the users uid exists as like
+    const postsRef = collection(db, 'posts');
+    const snap = await getDocs(postsRef);
+    snap.forEach((doc) => {
+      setPosts(snap.data());
+      // console.log('DOCC', doc.data());
+    });
   };
 
   useEffect(() => {
-    getPosts();
+    getPosts;
   }, []);
 
   useEffect(() => {
@@ -87,7 +105,7 @@ const LikedPosts = () => {
     // Fixa senare
     return (
       <SafeAreaView>
-        <Text>Looks like you haven't liked any posts yet...</Text>
+        <Text>No Posts</Text>
       </SafeAreaView>
     );
   }
