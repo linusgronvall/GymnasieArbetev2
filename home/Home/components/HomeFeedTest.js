@@ -94,8 +94,6 @@ const HomeFeedTest = ({ navigation }) => {
           }
         >
           <SafeAreaView style={{}}>
-            {/* {console.log('posts from jsx home', posts)} */}
-
             {posts.map((post) => (
               <TextPost
                 content={post?.text}
