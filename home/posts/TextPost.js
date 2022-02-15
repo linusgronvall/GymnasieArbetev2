@@ -60,6 +60,9 @@ const TextPost = ({
     });
   };
 
+  // TÖMMA EXISTS ARRAY!!!!!!
+  // TA BORT LOKALT!!!!!!
+
   // useEffect(() => {
   //   checkIfLike();
   // });

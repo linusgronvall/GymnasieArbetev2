@@ -50,8 +50,6 @@ const PostScreen = ({ navigation }) => {
     }
   }, []);
 
-  // console.log(auth.currentUser.uid);
-  console.log('Data from post', data?.uid);
   const postText = async () => {
     try {
       if (userInput.length < 1) {

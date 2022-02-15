@@ -12,20 +12,56 @@ import {
   query,
   collectionGroup,
   where,
+  deleteDoc,
 } from 'firebase/firestore';
 import { auth, db } from '../../../firebase/firebase';
 import FollowButton from './FollowButton';
 import { COLORS } from '../../../assets/colors';
 
 const UserListCard = ({ userName, name, profilePicture, uid }) => {
-  const [test, setTest] = useState([]);
+  const [following, setFollowing] = useState([]);
 
-  const handleFollow = async () => {
-    const docRef = doc(db, 'users', auth.currentUser.email);
-    await addDoc(collection(docRef, 'following'), {
-      uid: uid,
+  const checkForFollowing = async () => {
+    const q = query(
+      collection(db, 'users', auth.currentUser.email, 'following'),
+      where('uid', '==', uid)
+    );
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        console.log(
+          'Following',
+          querySnapshot.docs.map((doc) => doc.data().uid)
+        );
+        setFollowing(querySnapshot.docs.map((doc) => doc.data().uid));
+      });
     });
   };
+
+  const handleFollow = async () => {
+    console.log('FO', following);
+    checkForFollowing();
+    if (following.includes(uid)) {
+      const q = query(
+        collection(db, 'users', auth.currentUser.email, 'following'),
+        where('uid', '==', uid)
+      );
+      const snap = await getDocs(q);
+      snap.forEach((doc) => {
+        deleteDoc(doc.ref);
+      });
+      const newFollowing = [];
+      setFollowing(newFollowing);
+    } else {
+      const docRef = doc(db, 'users', auth.currentUser.email);
+      await addDoc(collection(docRef, 'following'), {
+        uid: uid,
+      });
+    }
+  };
+
+  useEffect(() => {
+    checkForFollowing();
+  }, []);
 
   return (
     <View style={styles.container}>
