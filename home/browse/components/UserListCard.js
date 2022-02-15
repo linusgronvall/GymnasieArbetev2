@@ -19,8 +19,6 @@ import { COLORS } from '../../../assets/colors';
 import FollowingButton from './FollowingButton';
 
 const UserListCard = ({ userName, name, profilePicture, uid }) => {
-  const [following, setFollowing] = useState([]);
-
   return (
     <View style={styles.container}>
       <View style={styles.userInfo}>

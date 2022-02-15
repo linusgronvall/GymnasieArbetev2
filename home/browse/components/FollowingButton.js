@@ -20,6 +20,7 @@ import { auth, db } from '../../../firebase/firebase';
 const FollowingButton = ({ uid }) => {
   const [following, setFollowing] = useState([]);
   const [isFollowing, setIsFollowing] = useState(false);
+
   const checkForFollowing = async () => {
     const q = query(
       collection(db, 'users', auth.currentUser.email, 'following'),
