@@ -46,12 +46,9 @@ const ProfileData = ({ navigation }) => {
           </View>
         </View>
         <View style={styles.secondContainer}>
-          <Follows />
+          <Follows followers={data?.followers} following={data?.following} />
         </View>
       </View>
-      {/* <View style={styles.location}>
-        <Text style={styles.locationText}>Hjärup, Sweden </Text>
-      </View> */}
       <Bio text={bioInput.content} show={false} />
     </View>
   );

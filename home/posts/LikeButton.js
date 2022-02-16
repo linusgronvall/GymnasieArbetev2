@@ -88,7 +88,7 @@ const LikeButton = ({ likeCount, id, uid }) => {
   }, []);
 
   return (
-    <TouchableOpacity style={styles.button}>
+    <TouchableOpacity style={styles.button} activeOpacity={0.8}>
       <Ionicons
         color='grey'
         size={17}

@@ -16,7 +16,7 @@ const ContextProvider = ({ children }) => {
       console.log(docSnap.data());
       setData(docSnap.data());
     } else {
-      console.log('No such document!', docSnap.data);
+      console.log('No such document!', docSnap.data());
     }
   }, []);
 

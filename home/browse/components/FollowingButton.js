@@ -65,16 +65,24 @@ const FollowingButton = ({ uid }) => {
     checkForFollowing();
   }, []);
 
-  if (!isFollowing) {
+  if (following.includes(uid)) {
     return (
-      <TouchableOpacity style={styles.followButton} onPress={handleFollow}>
-        <Text style={styles.followText}>Follow</Text>
+      <TouchableOpacity
+        style={styles.followingButton}
+        onPress={handleFollow}
+        activeOpacity={0.8}
+      >
+        <Text style={styles.followingText}>Following</Text>
       </TouchableOpacity>
     );
   } else {
     return (
-      <TouchableOpacity style={styles.followButton} onPress={handleFollow}>
-        <Text style={styles.followText}>Following</Text>
+      <TouchableOpacity
+        style={styles.followButton}
+        onPress={handleFollow}
+        activeOpacity={0.8}
+      >
+        <Text style={styles.followText}>Follow</Text>
       </TouchableOpacity>
     );
   }
@@ -91,6 +99,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  followingButton: {
+    backgroundColor: COLORS.primary,
+    width: 85,
+    height: 27,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: COLORS.secondary,
+  },
 
-  followText: { color: COLORS.white, fontWeight: '600' },
+  followText: { color: COLORS.primary, fontWeight: '600' },
+  followingText: { color: COLORS.secondary, fontWeight: '600' },
 });
