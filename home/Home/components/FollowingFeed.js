@@ -37,7 +37,7 @@ const FollowingFeed = () => {
     wait(1000).then(() => setRefreshing(false));
   });
 
-  const getFollowingPosts2 = async () => {
+  const getFollowingPosts = async () => {
     setPosts([]);
     const followingQ = query(
       collection(db, 'users', auth.currentUser.email, 'following')
@@ -57,11 +57,11 @@ const FollowingFeed = () => {
   };
 
   useEffect(() => {
-    getFollowingPosts2();
+    getFollowingPosts();
   }, []);
 
   useEffect(() => {
-    if (refreshing === false) getFollowingPosts2();
+    if (refreshing === false) getFollowingPosts();
   }, [refreshing]);
 
   if (posts) {
@@ -81,7 +81,6 @@ const FollowingFeed = () => {
           }
         >
           <SafeAreaView>
-            {/* {console.log('posts from jsx', posts)} */}
             {posts.map((post) => (
               <TextPost
                 content={post?.text}

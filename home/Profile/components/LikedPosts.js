@@ -30,43 +30,38 @@ const wait = (timeout) => {
 
 const LikedPosts = () => {
   const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [data, setData] = useState(null);
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     wait(1000).then(() => setRefreshing(false));
   });
 
-  // const getPosts = async () => {
-  //   const docRef = await getDocs(
-  //     collection(db, 'users', auth.currentUser.email, 'likedPosts')
-  //   );
+  const getLikedPosts = async () => {
+    setPosts([]);
+    const followingQ = query(
+      collection(db, 'users', auth.currentUser.email, 'likedPosts')
+    );
 
-  //   setPosts(docRef.docs.map((doc) => doc.data()));
-  // };
-
-  const getPosts = async () => {
-    // Get user info
-    const userRef = doc(db, 'users', auth.currentUser.email);
-    const userSnap = await getDoc(userRef);
-
-    // Get users liked posts by querying all posts where the users uid exists as like
-    const postsRef = collection(db, 'posts');
-    const snap = await getDocs(postsRef);
-    snap.forEach((doc) => {
-      setPosts(snap.data());
-      // console.log('DOCC', doc.data());
+    const usersIds = await getDocs(followingQ);
+    usersIds.forEach(async (doc) => {
+      const q = query(
+        collection(db, 'posts'),
+        where('uid', '==', doc.data().uid)
+      );
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        setPosts(querySnapshot.docs.map((doc) => doc.data()));
+      });
     });
   };
 
   useEffect(() => {
-    getPosts;
+    getLikedPosts();
   }, []);
 
   useEffect(() => {
-    if (refreshing === false) getPosts();
+    if (refreshing === false) getLikedPosts();
   }, [refreshing]);
 
   if (posts) {
@@ -88,12 +83,15 @@ const LikedPosts = () => {
           <SafeAreaView>
             {posts.map((post) => (
               <TextPost
-                content={post?.content}
-                image={post?.image}
-                username={post?.userName}
+                content={post?.text}
+                image={post?.profilePicture}
+                userName={post?.userName}
                 name={post?.name}
-                date={post.date}
+                date={post?.date}
                 key={post?.id}
+                id={post?.id}
+                uid={post?.uid}
+                likeCount={post?.likeCount}
               />
             ))}
           </SafeAreaView>

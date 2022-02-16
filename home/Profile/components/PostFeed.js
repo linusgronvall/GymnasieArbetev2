@@ -49,12 +49,13 @@ const PostFeed = () => {
     }
   }, []);
 
-  const getPosts2 = async () => {
+  const getPosts = async () => {
     setPosts([]);
     const q = query(
       collection(db, 'posts'),
       where('uid', '==', auth.currentUser.uid)
     );
+
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       querySnapshot.forEach((doc) => {
         setPosts(querySnapshot.docs.map((doc) => doc.data()));
@@ -63,11 +64,11 @@ const PostFeed = () => {
   };
 
   useEffect(() => {
-    getPosts2();
+    getPosts();
   }, []);
 
   useEffect(() => {
-    if (refreshing === false) getPosts2();
+    if (refreshing === false) getPosts();
   }, [refreshing]);
 
   if (posts) {
@@ -93,9 +94,11 @@ const PostFeed = () => {
                 image={post?.profilePicture}
                 userName={post?.userName}
                 name={post?.name}
-                date={post.date}
+                date={post?.date}
                 key={post?.id}
                 id={post?.id}
+                uid={post?.uid}
+                likeCount={post?.likeCount}
               />
             ))}
           </SafeAreaView>

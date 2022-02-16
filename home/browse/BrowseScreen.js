@@ -37,12 +37,6 @@ const BrowseScreen = ({ navigation }) => {
   const [refreshing, setRefreshing] = useState(false);
 
   const getUsers = async () => {
-    // const userPosts = query(collectionGroup(db, 'users'));
-    // const querySnapshot = await getDocs(userPosts);
-    // querySnapshot.forEach((doc) => {
-    //   setUsers(querySnapshot.docs.map((doc) => doc.data()));
-    // });
-
     setUsers([]);
     const q = query(collection(db, 'users'));
     const unsubscribe = onSnapshot(q, (querySnapshot) => {

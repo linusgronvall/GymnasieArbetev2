@@ -38,13 +38,6 @@ const LikeButton = ({ likeCount, id, uid }) => {
     });
   };
 
-  // TÖMMA EXISTS ARRAY!!!!!!
-  // TA BORT LOKALT!!!!!!
-
-  // useEffect(() => {
-  //   checkIfLike();
-  // });
-
   const handleLike = async () => {
     console.log('Temp', likedPosts);
     checkIfLike();
@@ -90,12 +83,16 @@ const LikeButton = ({ likeCount, id, uid }) => {
     }
   };
 
+  useEffect(() => {
+    checkIfLike();
+  }, []);
+
   return (
     <TouchableOpacity style={styles.button}>
       <Ionicons
         color='grey'
         size={17}
-        name={true ? 'heart' : 'heart-outline'} //
+        name={likedPosts.includes(id) ? 'heart' : 'heart-outline'} //
         onPress={handleLike}
       />
       <Text style={styles.actionButtonsNumbers}>{likeCount}</Text>
