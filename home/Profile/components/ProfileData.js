@@ -46,10 +46,14 @@ const ProfileData = ({ navigation }) => {
           </View>
         </View>
         <View style={styles.secondContainer}>
-          <Follows followers={data?.followers} following={data?.following} />
+          <Follows
+            followers={data?.followers}
+            following={data?.following}
+            numPosts={data?.numPosts}
+          />
         </View>
       </View>
-      <Bio text={bioInput.content} show={false} />
+      {/* <Bio text={bioInput.content} show={false} /> */}
     </View>
   );
 };
@@ -59,6 +63,7 @@ export default ProfileData;
 const styles = StyleSheet.create({
   container: {
     width: '100%',
+    height: 130,
     alignItems: 'center',
     justifyContent: 'flex-start',
     backgroundColor: COLORS.secondary,

@@ -13,6 +13,8 @@ import {
   collectionGroup,
   where,
   deleteDoc,
+  updateDoc,
+  increment,
 } from 'firebase/firestore';
 import { COLORS } from '../../../assets/colors';
 import { auth, db } from '../../../firebase/firebase';
@@ -23,7 +25,7 @@ const FollowingButton = ({ uid }) => {
 
   const checkForFollowing = async () => {
     const q = query(
-      collection(db, 'users', auth.currentUser.email, 'following'),
+      collection(db, 'users', auth.currentUser.email, 'Following'),
       where('uid', '==', uid)
     );
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -42,7 +44,7 @@ const FollowingButton = ({ uid }) => {
     checkForFollowing();
     if (following.includes(uid)) {
       const q = query(
-        collection(db, 'users', auth.currentUser.email, 'following'),
+        collection(db, 'users', auth.currentUser.email, 'Following'),
         where('uid', '==', uid)
       );
       const snap = await getDocs(q);
@@ -52,12 +54,30 @@ const FollowingButton = ({ uid }) => {
       setIsFollowing(false);
       const newFollowing = [];
       setFollowing(newFollowing);
+
+      // Decrement
+      const q2 = query(collection(db, 'users'), where('uid', '==', uid));
+      const snapShot = await getDocs(q2);
+      snapShot.forEach((doc) => {
+        updateDoc(doc.ref, {
+          followers: increment(-1),
+        });
+      });
     } else {
       const docRef = doc(db, 'users', auth.currentUser.email);
-      await addDoc(collection(docRef, 'following'), {
+      await addDoc(collection(docRef, 'Following'), {
         uid: uid,
       });
       setIsFollowing(true);
+
+      // Update original post likeCount
+      const q = query(collection(db, 'users'), where('uid', '==', uid));
+      const snapShot = await getDocs(q);
+      snapShot.forEach((doc) => {
+        updateDoc(doc.ref, {
+          followers: increment(1),
+        });
+      });
     }
   };
 

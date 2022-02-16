@@ -16,6 +16,8 @@ import {
   doc,
   onSnapshot,
   documentId,
+  updateDoc,
+  increment,
 } from 'firebase/firestore';
 import { COLORS } from '../../assets/colors';
 import uuid from 'react-native-uuid';
@@ -70,6 +72,10 @@ const PostScreen = ({ navigation }) => {
           uid: auth.currentUser.uid,
           likeCount: 0,
         });
+        await updateDoc(docRef, {
+          numPosts: increment(1),
+        });
+
         console.log('Document written with ID: ', docRef.id);
         console.log('user input: ', userInput);
         console.log(auth.currentUser.uid);

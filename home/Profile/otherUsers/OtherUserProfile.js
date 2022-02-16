@@ -12,16 +12,15 @@ import Bio from '../components/Bio';
 import Follows from '../components/Follows';
 
 const OtherUserProfile = ({
-  username,
+  userName,
   name,
   profilePicture,
   navigation,
   route,
 }) => {
-  const { data, user } = route.params;
-  console.log(data);
-  console.log(user);
-  console.log('userName:', username);
+  // const { data } = route.params;
+  // console.log(data);
+  console.log('userName:', userName);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -43,7 +42,7 @@ const OtherUserProfile = ({
             </View>
             <View style={styles.nameContainer}>
               <Text style={styles.realName}>{name}</Text>
-              <Text>@{username}</Text>
+              <Text>@{userName}</Text>
             </View>
           </View>
         </View>

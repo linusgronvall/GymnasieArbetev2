@@ -4,12 +4,22 @@ import { auth, db } from '../../../firebase/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { COLORS } from '../../../assets/colors';
 
-const Follows = () => {
+const Follows = ({ followers, following, numPosts }) => {
   return (
     <View>
       <View style={styles.follows}>
-        <Text style={styles.text}>45 Followers</Text>
-        <Text style={styles.text}>23 Following</Text>
+        <View style={styles.container}>
+          <Text style={styles.text}>{numPosts}</Text>
+          <Text style={styles.text2}>Posts</Text>
+        </View>
+        <View style={styles.container}>
+          <Text style={styles.text}>{followers}</Text>
+          <Text style={styles.text2}>Followers</Text>
+        </View>
+        <View style={styles.container}>
+          <Text style={styles.text}>{following}</Text>
+          <Text style={styles.text2}>Following</Text>
+        </View>
       </View>
     </View>
   );
@@ -22,5 +32,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingTop: 15,
   },
+  container: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+  },
   text: { marginRight: 8, color: COLORS.primary, fontWeight: '600' },
+  text2: { marginRight: 8, color: COLORS.primary, fontWeight: '500' },
 });

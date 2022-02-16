@@ -27,6 +27,7 @@ import UserListCard from './components/UserListCard';
 import { UsersContext } from './components/UsersContext';
 import { COLORS } from '../../assets/colors';
 import Header from '../../components/Header';
+import OtherUserProfile from '../Profile/otherUsers/OtherUserProfile';
 
 const wait = (timeout) => {
   return new Promise((resolve) => setTimeout(resolve, timeout));
@@ -54,7 +55,6 @@ const BrowseScreen = ({ navigation }) => {
   const handlePress = () => {
     navigation.navigate('OtherUserProfile', {
       data: 'text',
-      user: users?.userName,
     });
   };
 
